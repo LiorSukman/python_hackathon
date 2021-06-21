@@ -4,6 +4,8 @@ import h5py
 
 from analysis.obj.axon import Axon
 from analysis.obj.dendrite import Dendrite
+from tqdm import tqdm
+import numpy as np
 
 
 def load_axons():
@@ -21,15 +23,15 @@ def load_axons():
 def load_dendrites():
     dendrite_data = h5py.File(f'{os.getcwd()}/../data/dendrites.hdf5')
     all_dendrites = dendrite_data['dendrites']['skeleton']
+    classes = np.array(dendrite_data['dendrites']['class'][:])
     dendrites = {}
-    for dendrite_id in all_dendrites.keys():
-        dendrite = Dendrite(dendrite_id)
-        nodes = dendrite_data['dendrites']['skeleton'][dendrite_id]['nodes']
+    for dendrite_id in tqdm(list(all_dendrites.keys())):
+        post_syn = classes[int(dendrite_id) - 1]
+        dendrite = Dendrite(dendrite_id, post_syn)
+        nodes = all_dendrites[dendrite_id]['nodes']
         dendrite.load_nodes(nodes)
         dendrites[dendrite_id] = dendrite
     return dendrites
-
-
 
 
 if __name__ == '__main__':
