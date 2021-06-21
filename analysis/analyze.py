@@ -22,3 +22,27 @@ def load_axons():
 if __name__ == '__main__':
     axon = load_axons()
     # TODO: load dendrites
+
+"""
+for each node(x,y,z):
+    for each (x,y,z) in radius R from the node center:
+        - check if there is a segId of blood vessel in this coordinate
+        - if no:
+            continue
+        - else:
+            check distance between blood vessel to node
+            compare to min and replace if needed.
+            (save blood vessel segId and coordinates)
+"""
+
+"""
+1. create a list of all blood vessels and it's coordinates. e.g.:
+{
+    'bloodVesselId (segId)': [x,y,z]
+}
+
+2. for each node:
+    look for blood vessels that are in the radius R from the node:
+        [-r<X<r, -r<Y<r, -r<Z<r]
+    save the blood vessel with mun distance
+"""

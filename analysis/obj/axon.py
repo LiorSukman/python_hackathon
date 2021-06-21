@@ -8,7 +8,7 @@ class Axon:
         # self.neuron_id = neuron_id  # this is the neuron identifier
 
     def load_nodes(self, nodes):
-        for node_id in range(0,len(nodes[0])):
+        for node_id in range(0, len(nodes[0])):
             coordinates = nodes[:, node_id]
             node = Node(coordinates, node_id)
             self.nodes.append(node)
