@@ -4,8 +4,8 @@ import wget
 import os
 
 # Change this parameters according to your needs
-URL = "https://l4dense2019.rzg.mpg.de/webdav/blood-vessel-segmentation-volume/"
-DEST_FOLDER = f'{os.getcwd()}/blood-vessel-segmentation'
+URL = "https://l4dense2019.rzg.mpg.de/webdav/mapped-segmentation-volume/"
+DEST_FOLDER = f'{os.getcwd()}/neurite-segmentation'
 FILE_EXTENSIONS = ['.hdf5']
 
 
@@ -22,12 +22,14 @@ async def main():
     downloader = DDownloader(URL)
     await downloader.fetch_file_links(extensions=FILE_EXTENSIONS)  # returns set of downloadable file urls
     links = downloader.files_urls
-    os.makedirs(DEST_FOLDER)
+    os.makedirs(DEST_FOLDER, exist_ok=True)
     for link in links:
         if link.find('/'):
             file_name = link.rsplit('/', 1)[1]
             output = f'{DEST_FOLDER}/{file_name}'
-            wget.download(link, out=output)
+            if not os.path.isfile(output):
+                print(f'downloading file {file_name}')
+                wget.download(link, out=output)
 
 
 if __name__ == '__main__':
