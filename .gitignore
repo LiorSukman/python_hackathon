@@ -4,3 +4,4 @@
 **/data/blood-segmentation
 **/data/neurite-segmentation
 data/*.hdf5
+.vs/slnx.sqlite
