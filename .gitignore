@@ -1,3 +1,5 @@
 .git
 **/.idea
 **/.vs
+.vs/slnx.sqlite
+neurite-segmentation

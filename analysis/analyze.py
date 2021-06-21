@@ -3,6 +3,7 @@ import os
 import h5py
 
 from analysis.obj.axon import Axon
+from analysis.obj.dendrite import Dendrite
 
 
 def load_axons():
@@ -17,11 +18,26 @@ def load_axons():
     return axons
 
 
+def load_dendrites():
+    dendrite_data = h5py.File(f'{os.getcwd()}/../data/dendrites.hdf5')
+    all_dendrites = dendrite_data['dendrites']['skeleton']
+    dendrites = {}
+    for dendrite_id in all_dendrites.keys():
+        dendrite = Dendrite(dendrite_id)
+        nodes = dendrite_data['dendrites']['skeleton'][dendrite_id]['nodes']
+        dendrite.load_nodes(nodes)
+        dendrites[dendrite_id] = dendrite
+    return dendrites
+
+
 
 
 if __name__ == '__main__':
-    axon = load_axons()
-    # TODO: load dendrites
+    #axon = load_axons()
+    dendrite = load_dendrites()
+
+
+
 
 """
 for each node(x,y,z):
