@@ -1,8 +1,9 @@
 from analysis.obj.node import Node
 
 class Dendrite:
-    def __init__(self,id):
+    def __init__(self, id, post_syn):
         self.id = id
+        self.post_syn = post_syn
         self.nodes = []  # list of nodes in the dendrite
 
 
