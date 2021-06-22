@@ -45,7 +45,7 @@ All blood vessel points are located densely, so we decided to do a down sampling
     dendrites. It contains the fields: id (id of the axon / dendrite), class_type (class of the axon / dendrite),
     nodes ( a list of nodes as described in analysis/obj/node.py), edges (list of lists of size two of nodes
     rpresenting edges).
-    * analysis/analyze.py: A file containing different calculations for the visualization. Please read ducomentation
+* analysis/analyze.py: A file containing different calculations for the visualization. Please read ducomentation
         inside this file for further explanation.
 
 Visualization:
