@@ -34,7 +34,7 @@ def load_axons():
     all_axons = axons_data['axons']['skeleton']
     classes = axons_data['axons']['class']
     axons = {}
-    for axon_id in tqdm(list(all_axons.keys())[:100]):
+    for axon_id in tqdm(list(all_axons.keys())[0:5]):  # choose only first 5 axons
         axon_type = classes[int(axon_id) - 1]
         axon = Axon(axon_id, axon_type)
         nodes = all_axons[axon_id]['nodes']
@@ -49,7 +49,7 @@ def load_dendrites():
     all_dendrites = dendrite_data['dendrites']['skeleton']
     classes = np.array(dendrite_data['dendrites']['class'][:])
     dendrites = {}
-    for dendrite_id in tqdm(list(all_dendrites.keys())):
+    for dendrite_id in tqdm(list(all_dendrites.keys())[0:5]):  # choose only first 5 dendrites
         post_syn = classes[int(dendrite_id) - 1]
         dendrite = Dendrite(dendrite_id, post_syn)
         nodes = all_dendrites[dendrite_id]['nodes']
@@ -73,19 +73,39 @@ def load_blood_vessels():
         cube[1, 1, 1] = 26
         blood_vessels_indices = np.where(convolve(np_data, cube, mode='constant') > 1)
 
-        # blood_vessels_indices = np.where(np_data != 0)
-
-        # Calculate the absolute coordinates of the blood vessels (not just the coordinates relative to the current box
+        # Calculate the absolute coordinates of the blood vessels (not just the coordinates relative to the current box)
         box_indent = [int(s) for s in box_name.split('.')[0] if s.isdigit()]
         coordinates = np.array(
-            [blood_vessels_indices[0] + box_indent[0] * 1024, blood_vessels_indices[1] + box_indent[1] * 1024,
-             blood_vessels_indices[2] + box_indent[1] * 1024]).transpose()
+            [11.24*(blood_vessels_indices[0] + box_indent[0] * 1024), 11.24*(blood_vessels_indices[1] + box_indent[1] * 1024),
+             28*(blood_vessels_indices[2] + box_indent[1] * 1024)]).transpose()
 
         # Add new blood vessels coordinates to the matrix
         print('Appending new blood vessel indices to the matrix')
         blood_vessels = np.concatenate((blood_vessels, coordinates))
     return blood_vessels
 
+def hist(arr, fig_path, title):
+    pyplot.hist(arr)
+    pyplot.title(title)
+    pyplot.ylabel('# occurrences')
+    pyplot.xlabel('distances (nm?)')
+    pyplot.savefig(fig_path)
+    pyplot.close()
+
+
+def calc_dist(obj_dict, data_type):
+    for _, obj in obj_dict.items():
+        print(f'Calculating distances between {data_type} {obj.id} and blood vessels')
+        for node in obj.nodes:
+            print(f'Calculating distances between node {node.node_id} in {data_type} {obj.id} and blood vessels')
+            nodes_coordinates = np.array([[node.x, node.y, node.z]])
+            node_distances = distance.cdist(nodes_coordinates, blood_vessels)
+            min_dist = min(node_distances[0, :])
+            node.update_distance_from_blood_vessel(min_dist)
+            # print(f'Min distance between node {node.node_id} and nearest blood vessel is: {node.distance}')
+        distances_for_obj = [node.distance for node in obj.nodes]
+        hist(distances_for_obj, fig_path=f'{DATA_BASE_PATH}/hist_{obj.id}.png',
+             title=f'Histogram for {data_type}: {obj.id}')
 def save_distances_to_file(axons):
     print('Save distances to file')
     distances = []
@@ -99,22 +119,13 @@ def save_distances_to_file(axons):
 def main():
     print(f'Loading axons...')
     axons = load_axons()
+    # print(f'Loading dendrites...')
     # dendrites = load_dendrites()
     print(f'Loading blood vessels...')
     blood_vessels = load_blood_vessels()
 
-    for _, axon in axons.items():
-        print(f'Calculating distances between axon {axon.id} and blood vessels')
-
-        for node in axon.nodes:
-            print(f'Calculating distances between node {node.node_id} in axon {axon.id} and blood vessels')
-            nodes_coordinates = np.array([[node.x, node.y, node.z]])
-            node_distances = distance.cdist(nodes_coordinates, blood_vessels)
-            print(node.distance.shapew)
-            min_dist = min(node_distances[0, :])
-            node.update_distance_from_blood_vessel(min_dist)
-            print(f'Min distance between node {node.node_id} and nearest blood vessel is: {node.distance}')
-
+    calc_dist(axons, 'axon')
+    # calc_dist(dendrites, 'dendrite')
 
 if __name__ == '__main__':
     main()
