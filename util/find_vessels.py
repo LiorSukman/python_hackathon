@@ -1,12 +1,18 @@
-import h5py
 import os
+
+import h5py
 import numpy as np
 
+from conf import BLOOD_VESSEL_BOXES_BASE_PATH
+
 if __name__ == '__main__':
+    """
+    Find boxes where there are blood vessels
+    """
     boxes = {}
-    for file in os.listdir('../data/blood-segmentation/'):
+    for file in os.listdir(BLOOD_VESSEL_BOXES_BASE_PATH):
         print(f'loading data from: {file}')
-        seg = h5py.File(f'../data/blood-segmentation/{file}')
+        seg = h5py.File(f'{BLOOD_VESSEL_BOXES_BASE_PATH}/{file}')
         data = seg['data']
         np_data = np.array(data)
         max_seg_id = np_data.max()
