@@ -5,7 +5,7 @@ BLOOD_VESSEL_SEG_URL = 'https://l4dense2019.rzg.mpg.de/webdav/blood-vessel-segme
 DATA_BASE_PATH = '../data'
 AXONS_FILE_PATH = f'{DATA_BASE_PATH}/axons.hdf5'
 DENDRITES_FILE_PATH = f'{DATA_BASE_PATH}/dendrites.hdf5'
-BLOOD_VESSEL_BOXES_BASE_PATH = f'{DATA_BASE_PATH}/blood-segmentation'
+BLOOD_VESSEL_BOXES_BASE_PATH = f'{DATA_BASE_PATH}/blood-vessle-segmentation'
 
 
 BLOOD_VESSEL_BOXES = [
