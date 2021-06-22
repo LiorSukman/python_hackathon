@@ -23,5 +23,7 @@ BLOOD_VESSEL_BOXES = [
     'x5y2z2.hdf5', 'x5y4z2.hdf5', 'x5y4z3.hdf5', 'x5y5z2.hdf5', 'x5y5z3.hdf5', 'x5y6z2.hdf5'
 ]
 
-
-NUMBER_OF_PARTS_TO_ANALYZE = 5
+NUMBER_OF_PARTS_TO_ANALYZE = 2
+PIXEL_SIZE_X = 11.24
+PIXEL_SIZE_Y = 11.24
+PIXEL_SIZE_Z = 28
