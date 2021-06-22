@@ -3,3 +3,6 @@
 **/.vs
 .vs/slnx.sqlite
 neurite-segmentation
+axons.hdf5
+dendrites.hdf5
+blood-vessel-segmentation
