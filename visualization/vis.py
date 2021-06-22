@@ -58,7 +58,8 @@ def points_list(is_axon: bool = False, distance: bool = False):
         axons = get_data()
         for key in axons.keys():
             nodes += [[node.x, node.y, node.z] for node in axons[key].nodes]
-            edges += [[[node1.x, node1.y, node1.z], [node2.x, node2.y, node2.z]] for node1, node2 in axons[key].edges]
+            edges += [[[node1.x, node1.y, node1.z], [node2.x - node1.x, node2.y - node1.y, node2.z - node1.z]] for
+                      node1, node2 in axons[key].edges]
             axon_types_nodes += [axons[key].axon_type for _ in axons[key].nodes]
             axon_types_edges += [axons[key].axon_type for _ in axons[key].edges]
             if not distance:
@@ -70,10 +71,10 @@ def points_list(is_axon: bool = False, distance: bool = False):
 
         nodes = np_converter(nodes)
         values = np_converter(values)
-        edges = np_converter(edges[0])
-        edge_values = np_converter(edge_values[0])
+        edges = np_converter(edges)
+        edge_values = np_converter(edge_values)
         axon_types_nodes = np_converter(axon_types_nodes)
-        axon_types_edges = np_converter(axon_types_edges[0])
+        axon_types_edges = np_converter(axon_types_edges)
 
         return [nodes, values, edges, edge_values, axon_types_nodes, axon_types_edges]
 
@@ -140,22 +141,22 @@ def napari_view_axons(nodes, values, edges, edge_values, axon_types_nodes, axon_
             'value': edge_values[mask_edges]
         }
 
-        viewer = viewer.add_points(
+        _ = viewer.add_points(
             temp_nodes,
             properties=point_properties_temp,
             face_color='value',
-            size=25,
+            size=100,
             name=axon_type_tup[1]
         )
 
         if mask_edges.sum() == 0:
             continue
-        print(temp_edges)
 
-        viewer = viewer.add_vectors(
+        _ = viewer.add_vectors(
             temp_edges,
             properties=edge_properties_temp,
             edge_color='value',
+            edge_width=20,
             name=axon_type_tup[1]
         )
 
