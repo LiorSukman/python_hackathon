@@ -8,6 +8,11 @@ from conf import *
 
 
 def view_blood_vessele(file_path):
+    """
+    This function allows visualization of a blood vessele from a single hdf file and its edges
+
+    :param file_path: str which is the path to the hdf file to load
+    """
     with h5py.File(file_path, "r") as f:
         # Get the data
         print("getting the data")
@@ -17,7 +22,7 @@ def view_blood_vessele(file_path):
     viewer = napari.view_labels(data, name='blood vessel')
 
     blood = load_blood_vessels()
-    viewer.add_points(blood, name="edges")
+    viewer.add_points(blood, name="edges", size=100,)
 
 
 if __name__ == "__main__":

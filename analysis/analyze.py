@@ -17,6 +17,7 @@ def load_neuron_parts(data_file_path, neuron_part, num_samples=5):
 
     :param data_file_path: path to .hdf5 file
     :param neuron_part: can be axons/dendrites. See options in conf.NEURON_PARTS
+    :param num_samples: int describing the number of axons/dendrites to sample, default 5.
     :return: dict of the neuron parts
     """
     data = h5py.File(data_file_path)

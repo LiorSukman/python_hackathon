@@ -19,12 +19,17 @@ classes_axons = [CORCOR, THECOR, INH, OTHER_A]
 
 
 def dist_func(node):
+    """
+    :param node: node object holding a distance field
+    :return: The distance of the node from the nearest blood vessele in nm
+    """
     return node.distance
 
 
 def np_converter(lst: list, new_type: np.dtype = np.int32) -> np.ndarray:
     """
     :param lst: list of values
+    :param new_type: numpy type value to which the array will be casted, default is int32
     :return: converts the list to a numpy array of type int32
     """
     return np.array(lst).astype(new_type)
@@ -34,7 +39,9 @@ def points_list(is_axon: bool = True, distance: bool = False, num_samples: int =
     """
     creates a list of nodes of axons/dendrites the post synapse and the gradient vector by distance to (0,0,0) or
     the distance function provided by the analysis
+    :param is_axon: boolean value indicating whether to read axons or dendrites, default True (i.e. axons)
     :param distance: if distance = True then use distance function
+    :param num_samples: int describing the number of axons/dendrites to sample, default 5.
     :return: list of points, gradient values and post synapses
     """
     nodes, values, edges, edge_values, class_types_nodes, class_types_edges = [], [], [], [], [], []
@@ -73,6 +80,7 @@ def napari_view(nodes, values, edges, edge_values, class_types_nodes, class_type
         :param class_types_nodes: array of type for each node described as an ndarray of length n type int32
         :param class_types_edges: array of type for each edge described as an ndarray of length m of type int32
         The function sets up a napari view of all the class (nodes and edges and colors them according tot the values)
+        :param classes: list of tupples indicating all possibilities for the class code and its name
 
         * disntance was calculated earlier, could either e naive distance from (0, 0, 0) or from closest blood vessel,
         for edges distance was calculated from origin node (the first node of the two)
