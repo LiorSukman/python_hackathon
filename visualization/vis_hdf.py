@@ -2,6 +2,7 @@ import napari
 import h5py
 import dask.array as da
 import numpy as np
+from analysis.analyze import load_blood_vessels
 
 
 filename = "../data/blood-segmentation/x0y0z1.hdf5"
@@ -17,3 +18,9 @@ with h5py.File(filename, "r") as f:
     data = np.array(data[:])
 
 viewer = napari.view_labels(data, name='raw')
+
+blood = load_blood_vessels()
+viewer.add_points(blood, name="blood")
+
+
+
