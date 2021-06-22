@@ -5,10 +5,9 @@ the Somatosensory Cortex data (http://l4dense2019.brain.mpg.de/) can be visualiz
 
 The minimal distance between each neuron node and blood vessels is calculated.
 
-
 Analysis:
-	- Creating an object for each neuron part
-	- Loading the nodes of each object, making a list of nodes
+	- Creating an object for each neuron part (axon, dendrite) 
+	- Loading each object nodes, making a list of nodes
 	- Calculating the distance between each node and blood vessel
 	- Saving the minimum distance for each node
 
