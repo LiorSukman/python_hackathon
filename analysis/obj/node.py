@@ -4,3 +4,6 @@ class Node:
         self.y = coordinates[1]
         self.z = coordinates[2]
         self.node_id = node_id  # segment id in the axon/dendrite
+
+    def __str__(self):
+        return f"({self.x},{self.y},{self.z})"

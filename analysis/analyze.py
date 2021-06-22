@@ -11,11 +11,14 @@ import numpy as np
 def load_axons():
     axons_data = h5py.File(f'{os.getcwd()}/../data/axons.hdf5')
     all_axons = axons_data['axons']['skeleton']
+    classes = axons_data['axons']['class']
     axons = {}
-    for axon_id in all_axons.keys():
-        axon = Axon(axon_id)
-        nodes = axons_data['axons']['skeleton'][axon_id]['nodes']
-        axon.load_nodes(nodes)
+    for axon_id in tqdm(list(all_axons.keys())[:100]):
+        axon_type = classes[int(axon_id) - 1]
+        axon = Axon(axon_id, axon_type)
+        nodes = all_axons[axon_id]['nodes']
+        edges = all_axons[axon_id]['edges']
+        axon.load_nodes(nodes, edges)
         axons[axon_id] = axon
     return axons
 
