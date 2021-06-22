@@ -6,32 +6,32 @@ the Somatosensory Cortex data (http://l4dense2019.brain.mpg.de/).
 The goal of this project is to calculate the minimal distance for each neuron node to the closest
 blood vessel.
 
+The data is composed of Dendrites and Axons, each with a list of nodes indicating their spatial position.
+
 Analysis steps:
-1. Loading the data for each neuron part (axon, dendrite) and making a list of the nodes it's composed of
-2. Extracting the blood vessels coordinates
-2. Calculating the distance between each node and blood vessel
-3. Saving the minimum distance for each node
+1. Loading the data for each neuron part (axon, dendrite).
+2. Extracting the blood vessels coordinates.
+2. Calculating the distance between each node to any blood vessel.
+3. Saving the distance for the closest blood vessel of every node.
 
 Running time issues:
-Due to running time limitation, we chose to show the heatmap distance matrix for
-only 5 dendrites and 5 axons. 
+Due to the huge amount of data and running time limitation,
+we chose to calculate the distance for only 5 dendrites and 5 axons. 
 
-Due to long running time we decided to remove all inside indices of a blood vessel,
-with the understanding there is no need to calculate the distance to those indices,
+In order to reduce the running time we decided to remove all internal points of a blood vessel,
+with the understanding there is no need to calculate the distance to those points,
 the shortest distance will surely be on the edges of the blood vessel.
 
 Down sampling: 
-All blood vessel indices are located in a very dense way, so we decided to do a down sampling,
-removing an index every 100 indices.
+All blood vessel points are located in a very dense way, so we decided to do a down sampling,
+removing a point every 100 points.
 
 Visualization:
  - how to use
  - what can we see
 
 Requirements:
-- asyncio
-- directory_downloader 
-- wget
+- napari
 - os
 - h5py
 - numpy 
@@ -39,6 +39,11 @@ Requirements:
 - scipy.ndimage 
 - scipy.spatial 
 - tqdm 
+
+Optional packages for data download:
+- directory_downloader 
+- wget
+- asyncio 
 
 # Submitted by:
 - Lior Sukman; 319124244; lior.sukman@gmail.com
