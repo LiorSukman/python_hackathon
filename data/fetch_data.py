@@ -1,11 +1,14 @@
 import asyncio
-from directory_downloader import DDownloader
-import wget
 import os
 
+import wget
+from directory_downloader import DDownloader
+
+from conf import BLOOD_VESSEL_BOXES_BASE_PATH
+
 # Change this parameters according to your needs
-URL = "https://l4dense2019.rzg.mpg.de/webdav/mapped-segmentation-volume/"
-DEST_FOLDER = f'{os.getcwd()}/neurite-segmentation'
+URL = "https://l4dense2019.rzg.mpg.de/webdav/blood-vessel-segmentation-volume/"
+DEST_FOLDER = BLOOD_VESSEL_BOXES_BASE_PATH
 FILE_EXTENSIONS = ['.hdf5']
 
 

@@ -1,62 +1,27 @@
-from tqdm import tqdm
-import numpy as np
 import h5py
-from scipy.spatial import distance
-from scipy.ndimage import convolve
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.ndimage import convolve
+from scipy.spatial import distance
+from tqdm import tqdm
 
-from analysis.obj.axon import Axon
-from analysis.obj.dendrite import Dendrite
-
-DATA_BASE_PATH = '../data'
-AXONS_FILE_PATH = f'{DATA_BASE_PATH}/axons.hdf5'
-DENDRITES_FILE_PATH = f'{DATA_BASE_PATH}/dendrites.hdf5'
-BLOOD_VESSEL_BOXES = ['x0y0z1.hdf5', 'x0y1z1.hdf5']
-# BLOOD_VESSEL_BOXES = [
-#     'x0y0z1.hdf5', 'x0y1z1.hdf5', 'x0y2z0.hdf5', 'x0y2z3.hdf5', 'x0y3z0.hdf5', 'x0y3z2.hdf5', 'x0y3z3.hdf5',
-#     'x0y4z0.hdf5', 'x0y4z2.hdf5', 'x0y4z3.hdf5', 'x0y5z0.hdf5', 'x0y5z1.hdf5', 'x0y5z2.hdf5', 'x0y5z3.hdf5',
-#     'x0y6z0.hdf5', 'x0y6z1.hdf5', 'x0y6z3.hdf5', 'x0y7z2.hdf5', 'x0y8z0.hdf5', 'x0y8z2.hdf5', 'x1y0z1.hdf5',
-#     'x1y1z1.hdf5', 'x1y2z0.hdf5', 'x1y3z0.hdf5', 'x1y3z1.hdf5', 'x1y4z0.hdf5', 'x1y4z1.hdf5', 'x1y5z0.hdf5',
-#     'x1y5z1.hdf5', 'x1y6z1.hdf5', 'x1y7z2.hdf5', 'x1y8z0.hdf5', 'x2y0z1.hdf5', 'x2y1z1.hdf5', 'x2y2z0.hdf5',
-#     'x2y2z1.hdf5', 'x2y3z0.hdf5', 'x2y3z1.hdf5', 'x2y4z1.hdf5', 'x2y5z1.hdf5', 'x2y6z2.hdf5', 'x2y7z0.hdf5',
-#     'x2y7z1.hdf5', 'x2y7z2.hdf5', 'x2y8z0.hdf5', 'x2y8z1.hdf5', 'x3y0z1.hdf5', 'x3y0z2.hdf5', 'x3y0z3.hdf5',
-#     'x3y1z0.hdf5', 'x3y1z2.hdf5', 'x3y1z3.hdf5', 'x3y2z0.hdf5', 'x3y2z1.hdf5', 'x3y2z2.hdf5', 'x3y4z1.hdf5',
-#     'x3y5z1.hdf5', 'x3y5z2.hdf5', 'x3y6z1.hdf5', 'x3y6z2.hdf5', 'x3y7z1.hdf5', 'x3y7z2.hdf5', 'x3y8z0.hdf5',
-#     'x3y8z1.hdf5', 'x4y0z1.hdf5', 'x4y0z2.hdf5', 'x4y0z3.hdf5', 'x4y1z0.hdf5', 'x4y1z1.hdf5', 'x4y1z2.hdf5',
-#     'x4y1z3.hdf5', 'x4y2z0.hdf5', 'x4y2z2.hdf5', 'x4y4z1.hdf5', 'x4y5z1.hdf5', 'x4y5z2.hdf5', 'x4y6z1.hdf5',
-#     'x4y6z2.hdf5', 'x4y7z1.hdf5', 'x4y7z2.hdf5', 'x5y0z1.hdf5', 'x5y0z2.hdf5', 'x5y1z1.hdf5', 'x5y1z2.hdf5',
-#     'x5y2z2.hdf5', 'x5y4z2.hdf5', 'x5y4z3.hdf5', 'x5y5z2.hdf5', 'x5y5z3.hdf5', 'x5y6z2.hdf5'
-# ]
-BLOOD_VESSEL_BOXES_BASE_PATH = f'{DATA_BASE_PATH}/blood-segmentation'
+from analysis.obj.neuron_part import NeuronPart
+from conf import *
 
 
-def load_axons():
-    axons_data = h5py.File(AXONS_FILE_PATH)
-    all_axons = axons_data['axons']['skeleton']
-    classes = axons_data['axons']['class']
-    axons = {}
-    for axon_id in tqdm(list(all_axons.keys())[0:5]):  # choose only first 5 axons
-        axon_type = classes[int(axon_id) - 1]
-        axon = Axon(axon_id, axon_type)
-        nodes = all_axons[axon_id]['nodes']
-        edges = all_axons[axon_id]['edges']
-        axon.load_nodes(nodes, edges)
-        axons[axon_id] = axon
-    return axons
-
-
-def load_dendrites():
-    dendrite_data = h5py.File(DENDRITES_FILE_PATH)
-    all_dendrites = dendrite_data['dendrites']['skeleton']
-    classes = np.array(dendrite_data['dendrites']['class'][:])
-    dendrites = {}
-    for dendrite_id in tqdm(list(all_dendrites.keys())[0:5]):  # choose only first 5 dendrites
-        post_syn = classes[int(dendrite_id) - 1]
-        dendrite = Dendrite(dendrite_id, post_syn)
-        nodes = all_dendrites[dendrite_id]['nodes']
-        dendrite.load_nodes(nodes)
-        dendrites[dendrite_id] = dendrite
-    return dendrites
+def load_neuron_parts(data_file_path, neuron_part):
+    data = h5py.File(data_file_path)
+    all_parts = data[neuron_part]['skeleton']
+    classes = data[neuron_part]['class']
+    parts = {}
+    for part_id in tqdm(list(all_parts.keys())[0:NUMBER_OF_PARTS_TO_ANALYZE]):  # work with a custom number of parts
+        class_type = classes[int(part_id) - 1]
+        neuron_part = NeuronPart(part_id, class_type)
+        nodes = all_parts[part_id]['nodes']
+        edges = all_parts[part_id]['edges']
+        neuron_part.load_nodes_edges(nodes, edges)
+        parts[part_id] = neuron_part
+    return parts
 
 
 def load_blood_vessels():
@@ -97,19 +62,18 @@ def hist(arr, fig_path, title):
     plt.close()
 
 
-def calc_dist(obj_dict, data_type, blood_vessels):
-    for _, obj in obj_dict.items():
-        print(f'Calculating distances between {data_type} {obj.id} and blood vessels')
-        for node in obj.nodes:
+def calc_dist(parts_dict, neuron_part_type, blood_vessels):
+    for _, part in parts_dict.items():
+        print(f'Calculating distances between {neuron_part_type} {part.id} and blood vessels')
+        for node in part.nodes:
             # print(f'Calculating distances between node {node.node_id} in {data_type} {obj.id} and blood vessels')
             nodes_coordinates = np.array([[node.x, node.y, node.z]])
             node_distances = distance.cdist(nodes_coordinates, blood_vessels)
             min_dist = min(node_distances[0, :])
             node.update_distance_from_blood_vessel(min_dist)
-            # print(f'Min distance between node {node.node_id} and nearest blood vessel is: {node.distance}')
-        distances_for_obj = [node.distance for node in obj.nodes]
-        hist(distances_for_obj, fig_path=f'{DATA_BASE_PATH}/hist_{obj.id}.png',
-             title=f'Histogram for {data_type}: {obj.id}')
+        distances_for_obj = [node.distance for node in part.nodes]
+        hist(distances_for_obj, fig_path=f'{DATA_BASE_PATH}/hist_{neuron_part_type}_{part.id}.png',
+             title=f'Histogram for {neuron_part_type}: {part.id}')
 
 
 def save_distances_to_file(axons):
@@ -124,14 +88,14 @@ def save_distances_to_file(axons):
 
 def main():
     print(f'Loading axons...')
-    axons = load_axons()
+    axons = load_neuron_parts(AXONS_FILE_PATH, 'axons')
     # print(f'Loading dendrites...')
-    # dendrites = load_dendrites()
+    # dendrites = load_neuron_parts(DENDRITES_FILE_PATH, 'dendrites')
     print(f'Loading blood vessels...')
     blood_vessels = load_blood_vessels()
 
     calc_dist(axons, 'axon', blood_vessels)
-    # calc_dist(dendrites, 'dendrite')
+    # calc_dist(dendrites, 'dendrite', blood_vessels)
 
     return axons
 

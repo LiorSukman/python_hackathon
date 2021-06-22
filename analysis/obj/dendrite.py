@@ -8,7 +8,7 @@ class Dendrite:
         self.nodes = []  # list of nodes in the dendrite
         self.edges = []
 
-    def load_nodes(self, nodes, edges):
+    def load_nodes_edges(self, nodes, edges):
         for node_id in range(0, len(nodes[0])):
             coordinates = nodes[:, node_id]
             node = Node(coordinates, node_id)

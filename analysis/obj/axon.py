@@ -9,7 +9,7 @@ class Axon:
         self.edges = []
         # self.neuron_id = neuron_id  # this is the neuron identifier
 
-    def load_nodes(self, nodes, edges):
+    def load_nodes_edges(self, nodes, edges):
         for node_id in range(0, len(nodes[0])):
             coordinates = nodes[:, node_id]
             node = Node(coordinates, node_id)
