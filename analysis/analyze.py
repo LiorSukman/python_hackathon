@@ -4,12 +4,13 @@ import numpy as np
 from scipy.ndimage import convolve
 from scipy.spatial import distance
 from tqdm import tqdm
+import os
 
 from analysis.obj.neuron_part import NeuronPart
 from conf import *
 
 
-def load_neuron_parts(data_file_path, neuron_part):
+def load_neuron_parts(data_file_path, neuron_part, num_samples=5):
     """
     Load the neuron parts (axons/dendrites) from hdf5 file.
     This will extract the data of each part, such as: nodes, edges and class type.
@@ -23,7 +24,7 @@ def load_neuron_parts(data_file_path, neuron_part):
     classes = data[neuron_part]['class']
     parts = {}
 
-    for part_id in tqdm(list(all_parts.keys())[0:NUMBER_OF_PARTS_TO_ANALYZE]):  # work with a custom number of parts
+    for part_id in tqdm(list(all_parts.keys())[0:num_samples]):  # work with a custom number of parts
         class_type = classes[int(part_id) - 1]
         neuron_part = NeuronPart(part_id, class_type)
 
@@ -104,8 +105,13 @@ def plot_histogram(parts_dict, neuron_part_type):
     for _, part in parts_dict.items():
         print(f'Plot histogram for {neuron_part_type} {part.id}')
         distances_for_obj = [node.distance for node in part.nodes]
+
+        if not os.path.isdir(HIST_FIG_BASE_PATH):
+            os.mkdir(HIST_FIG_BASE_PATH)
+
         hist(distances_for_obj, fig_path=f'{HIST_FIG_BASE_PATH}/hist_{neuron_part_type}_{part.id}.png',
              title=f'Histogram for {neuron_part_type}: {part.id}')
+    plt.close()
 
 
 def hist(arr, fig_path, title):
@@ -120,37 +126,25 @@ def hist(arr, fig_path, title):
     plt.ylabel('# occurrences')
     plt.xlabel('distances (nm)')
     plt.savefig(fig_path)
-    plt.close()
+    plt.clf()
 
 
-def save_distances_to_file(axons):
-    # TODO: do we still need this?
-    print('Save distances to file')
-    distances = []
-    for axon_key, axon in axons.items():
-        # [axon id, node id, min distance]
-        distances += [[axon_key, node.id, node.distance] for node in axon.nodes]
-    with open(f'{DATA_BASE_PATH}/axon_blood_distances', 'w') as f:
-        np.array(distances).tofile(f)
-
-
-def main():
-    print(f'Loading axons...')
-    axons = load_neuron_parts(AXONS_FILE_PATH, NEURON_PARTS[0])
-    print(f'Loading dendrites...')
-    dendrites = load_neuron_parts(DENDRITES_FILE_PATH, NEURON_PARTS[1])
+def main(is_axon: bool = True, num_samples: int = 5):
+    obj_name = 'axons' if is_axon else 'dendrites'
+    if is_axon:
+        print(f'Loading axons...')
+        data = load_neuron_parts(AXONS_FILE_PATH, obj_name, num_samples)
+    else:
+        print(f'Loading dendrites...')
+        data = load_neuron_parts(DENDRITES_FILE_PATH, obj_name, num_samples)
     print(f'Loading blood vessels...')
     blood_vessels = load_blood_vessels()
 
-    print(f'--------Calculating distances and histograms for axons--------')
-    calc_min_distances(axons, 'axon', blood_vessels)
-    plot_histogram(axons, 'axon')
+    print(f'--------Calculating distances and histograms--------')
+    calc_min_distances(data, obj_name, blood_vessels)
+    plot_histogram(data, obj_name)
 
-    print(f'--------Calculating distances and histograms for dendrites--------')
-    calc_min_distances(dendrites, 'dendrite', blood_vessels)
-    plot_histogram(dendrites, 'dendrite')
-
-    return axons, dendrites
+    return data
 
 
 if __name__ == '__main__':
