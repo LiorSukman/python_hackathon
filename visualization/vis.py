@@ -1,4 +1,4 @@
-from analysis.analyze import load_dendrites, load_axons
+from analysis.analyze import main as get_data
 import numpy as np
 import napari
 import argparse
@@ -41,7 +41,7 @@ def points_list(is_axon: bool = False, distance: bool = False):
     """
     if not is_axon:
         nodes, values, post_syn = [], [], []
-        dendrites = load_dendrites()
+        dendrites = get_data()
         for key in dendrites.keys():
             nodes += [[node.x, node.y, node.z] for node in dendrites[key].nodes]
             if not distance:
@@ -56,7 +56,7 @@ def points_list(is_axon: bool = False, distance: bool = False):
         return [nodes, values, post_syn]
     else:
         nodes, values, edges, edge_values, axon_types_nodes, axon_types_edges = [], [], [], [], [], []
-        axons = load_axons()
+        axons = get_data()
         for key in axons.keys():
             nodes += [[node.x, node.y, node.z] for node in axons[key].nodes]
             edges += [[[node1.x, node1.y, node1.z], [node2.x, node2.y, node2.z]] for node1, node2 in axons[key].edges]
@@ -167,12 +167,12 @@ def main(is_axon, distance):
         napari_view_axons(data[0], data[1], data[2], data[3], data[4], data[5])  # TODO would *data work here?
     else:
         data = points_list(is_axon=False, distance=distance)
-        napari_view_dendrites(data[0], data[1], data[2]) # TODO would *data work here?
+        napari_view_dendrites(data[0], data[1], data[2])  # TODO would *data work here?
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run EM visualization')
-    parser.add_argument('is_axon', help='True - axons, False - dendrites', default=False)
+    parser.add_argument('is_axon', help='True - axons, False - dendrites', default=True)
     parser.add_argument('distance', help='True - use distance function', default=False)
 
     args = parser.parse_args()

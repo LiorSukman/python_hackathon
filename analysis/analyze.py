@@ -3,6 +3,7 @@ import numpy as np
 import h5py
 from scipy.spatial import distance
 from scipy.ndimage import convolve
+import matplotlib.pyplot as plt
 
 from analysis.obj.axon import Axon
 from analysis.obj.dendrite import Dendrite
@@ -70,27 +71,29 @@ def load_blood_vessels():
         # find the (x,y,z) indices where there are blood vessels
         print(f'Finding blood vessel indices in box {box_name}')
         cube = np.ones((3, 3, 3)) * -1
-        cube[1, 1, 1] = 26
+        cube[1, 1, 1] = 26  # i.e. 3^3 - 1
         blood_vessels_indices = np.where(convolve(np_data, cube, mode='constant') > 1)
 
         # Calculate the absolute coordinates of the blood vessels (not just the coordinates relative to the current box)
         box_indent = [int(s) for s in box_name.split('.')[0] if s.isdigit()]
         coordinates = np.array(
-            [11.24*(blood_vessels_indices[0] + box_indent[0] * 1024), 11.24*(blood_vessels_indices[1] + box_indent[1] * 1024),
-             28*(blood_vessels_indices[2] + box_indent[1] * 1024)]).transpose()
+            [11.24 * (blood_vessels_indices[0] + box_indent[0] * 1024),
+             11.24 * (blood_vessels_indices[1] + box_indent[1] * 1024),
+             28 * (blood_vessels_indices[2] + box_indent[1] * 1024)]).transpose()
 
         # Add new blood vessels coordinates to the matrix
         print('Appending new blood vessel indices to the matrix')
         blood_vessels = np.concatenate((blood_vessels, coordinates))
     return blood_vessels
 
+
 def hist(arr, fig_path, title):
-    pyplot.hist(arr)
-    pyplot.title(title)
-    pyplot.ylabel('# occurrences')
-    pyplot.xlabel('distances (nm?)')
-    pyplot.savefig(fig_path)
-    pyplot.close()
+    plt.hist(arr)
+    plt.title(title)
+    plt.ylabel('# occurrences')
+    plt.xlabel('distances (nm)')
+    plt.savefig(fig_path)
+    plt.close()
 
 
 def calc_dist(obj_dict, data_type):
@@ -106,6 +109,8 @@ def calc_dist(obj_dict, data_type):
         distances_for_obj = [node.distance for node in obj.nodes]
         hist(distances_for_obj, fig_path=f'{DATA_BASE_PATH}/hist_{obj.id}.png',
              title=f'Histogram for {data_type}: {obj.id}')
+
+
 def save_distances_to_file(axons):
     print('Save distances to file')
     distances = []
@@ -126,6 +131,9 @@ def main():
 
     calc_dist(axons, 'axon')
     # calc_dist(dendrites, 'dendrite')
+
+    return axons
+
 
 if __name__ == '__main__':
     main()
