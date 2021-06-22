@@ -1,15 +1,16 @@
 # python_hackathon
 Quantifying the interaction between blood vessels and neurons (Pablo Blinder's Lab)
-Using Napari visualization tool, the Dense Connectomic Reconstruction in Layer 4 of
-the Somatosensory Cortex data (http://l4dense2019.brain.mpg.de/) can be visualize. 
+using Napari visualization tool, to present the Dense Connectomic Reconstruction in Layer 4 of
+the Somatosensory Cortex data (http://l4dense2019.brain.mpg.de/). 
 
-The minimal distance between each neuron node and blood vessels is calculated.
+The goal of this project is to calculate the minimal distance for each neuron node to the closest
+blood vessel.
 
-Analysis:
-	- Creating an object for each neuron part (axon, dendrite) 
-	- Loading each object nodes, making a list of nodes
-	- Calculating the distance between each node and blood vessel
-	- Saving the minimum distance for each node
+Analysis steps:
+1. Loading the data for each neuron part (axon, dendrite) and making a list of the nodes it's composed of
+2. Extracting the blood vessels coordinates
+2. Calculating the distance between each node and blood vessel
+3. Saving the minimum distance for each node
 
 Running time issues:
 Due to running time limitation, we chose to show the heatmap distance matrix for
