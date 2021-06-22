@@ -74,8 +74,8 @@ def load_blood_vessels():
         # Calculate the absolute coordinates of the blood vessels (not just the coordinates relative to the current box)
         box_indent = [int(s) for s in box_name.split('.')[0] if s.isdigit()]
         coordinates = np.array(
-            [blood_vessels_indices[0] + box_indent[0] * 1024, blood_vessels_indices[1] + box_indent[1] * 1024,
-             blood_vessels_indices[2] + box_indent[1] * 1024]).transpose()
+            [11.24*(blood_vessels_indices[0] + box_indent[0] * 1024), 11.24*(blood_vessels_indices[1] + box_indent[1] * 1024),
+             24*(blood_vessels_indices[2] + box_indent[1] * 1024])).transpose()
 
         # Add new blood vessels coordinates to the matrix
         print('Appending new blood vessel indices to the matrix')
