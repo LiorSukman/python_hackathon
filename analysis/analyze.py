@@ -4,6 +4,7 @@ import h5py
 import numpy as np
 from scipy.spatial import distance
 from tqdm import tqdm
+from scipy.ndimage import convolve
 
 from analysis.obj.axon import Axon
 from analysis.obj.dendrite import Dendrite
@@ -67,7 +68,11 @@ def load_blood_vessels():
 
         # find the (x,y,z) indices where there are blood vessels
         print(f'Finding blood vessel indices in box {box_name}')
-        blood_vessels_indices = np.where(np_data != 0)
+        cube = np.ones((3, 3, 3)) * -1
+        cube[1, 1, 1] = 26
+        blood_vessels_indices = np.where(convolve(np_data, cube, mode='constant') > 1)
+
+        # blood_vessels_indices = np.where(np_data != 0)
 
         # Calculate the absolute coordinates of the blood vessels (not just the coordinates relative to the current box
         box_indent = [int(s) for s in box_name.split('.')[0] if s.isdigit()]
@@ -120,7 +125,7 @@ if __name__ == '__main__':
         # axon_distances = distance.cdist(axon_nodes, blood_vessels)
 
         for node in axon.nodes:
-            print(f'Calculating distances between node {node.id} in axon {axon.id} and blood vessels')
+            print(f'Calculating distances between node {node.node_id} in axon {axon.id} and blood vessels')
             nodes_coordinates = np.array([[node.x, node.y, node.z]])
             node_distances = distance.cdist(nodes_coordinates, blood_vessels)
             min_dist = min(node_distances[0, :])
