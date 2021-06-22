@@ -79,7 +79,6 @@ def load_blood_vessels():
 
         # Add new blood vessels coordinates to the matrix
         print('Appending new blood vessel indices to the matrix')
-        blood_vessels = np.concatenate((blood_vessels, coordinates))
 
     return blood_vessels
 
