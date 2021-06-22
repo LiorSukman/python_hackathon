@@ -32,3 +32,5 @@ BOX_SIZE = 1024
 DOWN_SAMPLING_BLOOD_VESSEL = 100
 
 NEURON_PARTS = ['axons', 'dendrites']
+
+HIST_FIG_BASE_PATH = f'{DATA_BASE_PATH}/histograms/'

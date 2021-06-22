@@ -74,7 +74,47 @@ def load_blood_vessels():
     return blood_vessels
 
 
+def calc_min_distances(parts_dict, neuron_part_type, blood_vessels):
+    """
+    Calculating the distance to the closest blood vessel for each neuron part (axon/dendrite).
+    Distance calculation is node-based, meaning for each node we calculate the distance to all blood vessels
+    and looking for the minimal distance.
+    This is done for each node in the neuron part in the given parts dictionary.
+
+    :param parts_dict: dict of the neuron parts (axons/dendrites)
+    :param neuron_part_type: axon/dendrite
+    :param blood_vessels: ndarray of shape (N,3) representing the blood vessels spatial coordinates
+    """
+    for _, part in parts_dict.items():
+        print(f'Calculating distances between {neuron_part_type} {part.id} and blood vessels')
+        for node in part.nodes:
+            node_coordinates = np.array([[node.x, node.y, node.z]])
+            node_distances = distance.cdist(node_coordinates, blood_vessels)
+            min_dist = min(node_distances[0, :])
+            node.update_distance_from_blood_vessel(min_dist)
+
+
+def plot_histogram(parts_dict, neuron_part_type):
+    """
+    For each neuron part, a histogram of the distances is plotted in saved.
+
+    :param parts_dict: dict of the neuron parts (axons/dendrites)
+    :param neuron_part_type: axon/dendrite
+    """
+    for _, part in parts_dict.items():
+        print(f'Plot histogram for {neuron_part_type} {part.id}')
+        distances_for_obj = [node.distance for node in part.nodes]
+        hist(distances_for_obj, fig_path=f'{HIST_FIG_BASE_PATH}/hist_{neuron_part_type}_{part.id}.png',
+             title=f'Histogram for {neuron_part_type}: {part.id}')
+
+
 def hist(arr, fig_path, title):
+    """
+    Simple function for saving a histogram figure
+    :param arr: data for the histogram
+    :param fig_path: path to save the figure
+    :param title: title of the figure
+    """
     plt.hist(arr)
     plt.title(title)
     plt.ylabel('# occurrences')
@@ -83,21 +123,8 @@ def hist(arr, fig_path, title):
     plt.close()
 
 
-def calc_dist(parts_dict, neuron_part_type, blood_vessels):
-    for _, part in parts_dict.items():
-        print(f'Calculating distances between {neuron_part_type} {part.id} and blood vessels')
-        for node in part.nodes:
-            # print(f'Calculating distances between node {node.node_id} in {data_type} {obj.id} and blood vessels')
-            nodes_coordinates = np.array([[node.x, node.y, node.z]])
-            node_distances = distance.cdist(nodes_coordinates, blood_vessels)
-            min_dist = min(node_distances[0, :])
-            node.update_distance_from_blood_vessel(min_dist)
-        distances_for_obj = [node.distance for node in part.nodes]
-        hist(distances_for_obj, fig_path=f'{DATA_BASE_PATH}/hist_{neuron_part_type}_{part.id}.png',
-             title=f'Histogram for {neuron_part_type}: {part.id}')
-
-
 def save_distances_to_file(axons):
+    # TODO: do we still need this?
     print('Save distances to file')
     distances = []
     for axon_key, axon in axons.items():
@@ -110,15 +137,20 @@ def save_distances_to_file(axons):
 def main():
     print(f'Loading axons...')
     axons = load_neuron_parts(AXONS_FILE_PATH, NEURON_PARTS[0])
-    # print(f'Loading dendrites...')
-    # dendrites = load_neuron_parts(DENDRITES_FILE_PATH, NEURON_PARTS[1])
+    print(f'Loading dendrites...')
+    dendrites = load_neuron_parts(DENDRITES_FILE_PATH, NEURON_PARTS[1])
     print(f'Loading blood vessels...')
     blood_vessels = load_blood_vessels()
 
-    calc_dist(axons, 'axon', blood_vessels)
-    # calc_dist(dendrites, 'dendrite', blood_vessels)
+    print(f'--------Calculating distances and histograms for axons--------')
+    calc_min_distances(axons, 'axon', blood_vessels)
+    plot_histogram(axons, 'axon')
 
-    return axons
+    print(f'--------Calculating distances and histograms for dendrites--------')
+    calc_min_distances(dendrites, 'dendrite', blood_vessels)
+    plot_histogram(dendrites, 'dendrite')
+
+    return axons, dendrites
 
 
 if __name__ == '__main__':
