@@ -8,8 +8,7 @@ DENDRITES_FILE_PATH = f'{DATA_BASE_PATH}/dendrites.hdf5'
 BLOOD_VESSEL_BOXES_BASE_PATH = f'{DATA_BASE_PATH}/blood-segmentation'
 
 
-BLOOD_VESSEL_BOXES = ['x0y0z1.hdf5']
-"""BLOOD_VESSEL_BOXES = [
+BLOOD_VESSEL_BOXES = [
     'x0y0z1.hdf5', 'x0y1z1.hdf5', 'x0y2z0.hdf5', 'x0y2z3.hdf5', 'x0y3z0.hdf5', 'x0y3z2.hdf5', 'x0y3z3.hdf5',
     'x0y4z0.hdf5', 'x0y4z2.hdf5', 'x0y4z3.hdf5', 'x0y5z0.hdf5', 'x0y5z1.hdf5', 'x0y5z2.hdf5', 'x0y5z3.hdf5',
     'x0y6z0.hdf5', 'x0y6z1.hdf5', 'x0y6z3.hdf5', 'x0y7z2.hdf5', 'x0y8z0.hdf5', 'x0y8z2.hdf5', 'x1y0z1.hdf5',
@@ -23,7 +22,7 @@ BLOOD_VESSEL_BOXES = ['x0y0z1.hdf5']
     'x4y1z3.hdf5', 'x4y2z0.hdf5', 'x4y2z2.hdf5', 'x4y4z1.hdf5', 'x4y5z1.hdf5', 'x4y5z2.hdf5', 'x4y6z1.hdf5',
     'x4y6z2.hdf5', 'x4y7z1.hdf5', 'x4y7z2.hdf5', 'x5y0z1.hdf5', 'x5y0z2.hdf5', 'x5y1z1.hdf5', 'x5y1z2.hdf5',
     'x5y2z2.hdf5', 'x5y4z2.hdf5', 'x5y4z3.hdf5', 'x5y5z2.hdf5', 'x5y5z3.hdf5', 'x5y6z2.hdf5'
-]"""
+]
 
 # The following are based on the dataset configuration
 PIXEL_SIZE_X = 11.24
