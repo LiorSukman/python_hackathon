@@ -45,10 +45,15 @@ All blood vessel points are located densely, so we decided to do a down sampling
     dendrites. It contains the fields: id (id of the axon / dendrite), class_type (class of the axon / dendrite),
     nodes ( a list of nodes as described in analysis/obj/node.py), edges (list of lists of size two of nodes
     rpresenting edges).
+    * analysis/analyze.py: A file containing different calculations for the visualization. Please read ducomentation
+        inside this file for further explanation.
 
 Visualization:
 This module consists of two important files:
-    * visualization/vis_hdf.py: ***complete this*** 
+    * visualization/vis_hdf.py: Visualize a blood vessel and its edges. This program opens a napari visualization window
+        and is controlled by the following command line arguments:
+        -file: str of the path to the hdf file wanted to be shown. Make sure that this is also the only file in 
+        BLOOD_VESSEL_BOXES from conf (which holds the names of the blood-vessele hdf files to be read)
     * visualization/vis.py: This program opens a napari visualization window showing 5 dendrites / axons colored 
         accordind to their distance either from the origin or from the closest blood vessel. This is controlled by the
         following command line arguments:
