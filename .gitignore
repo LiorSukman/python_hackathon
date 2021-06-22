@@ -4,6 +4,7 @@
 **/data/blood-segmentation
 **/data/neurite-segmentation
 data/*.hdf5
+data/*.png
 .vs/slnx.sqlite
 neurite-segmentation
 axons.hdf5

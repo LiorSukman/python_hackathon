@@ -83,7 +83,8 @@ def load_blood_vessels():
 
         # Add new blood vessels coordinates to the matrix
         print('Appending new blood vessel indices to the matrix')
-        blood_vessels = np.concatenate((blood_vessels, coordinates))
+        blood_vessels = np.concatenate((blood_vessels, coordinates[0::100, ]))
+
     return blood_vessels
 
 
@@ -96,11 +97,11 @@ def hist(arr, fig_path, title):
     plt.close()
 
 
-def calc_dist(obj_dict, data_type):
+def calc_dist(obj_dict, data_type, blood_vessels):
     for _, obj in obj_dict.items():
         print(f'Calculating distances between {data_type} {obj.id} and blood vessels')
         for node in obj.nodes:
-            print(f'Calculating distances between node {node.node_id} in {data_type} {obj.id} and blood vessels')
+            # print(f'Calculating distances between node {node.node_id} in {data_type} {obj.id} and blood vessels')
             nodes_coordinates = np.array([[node.x, node.y, node.z]])
             node_distances = distance.cdist(nodes_coordinates, blood_vessels)
             min_dist = min(node_distances[0, :])
@@ -129,7 +130,7 @@ def main():
     print(f'Loading blood vessels...')
     blood_vessels = load_blood_vessels()
 
-    calc_dist(axons, 'axon')
+    calc_dist(axons, 'axon', blood_vessels)
     # calc_dist(dendrites, 'dendrite')
 
     return axons

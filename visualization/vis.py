@@ -19,7 +19,6 @@ classes_axons = [CORCOR, THECOR, INH, OTHER_A]
 
 
 def dist_func(node):
-    raise NotImplementedError
     return node.distance
 
 
@@ -172,8 +171,8 @@ def main(is_axon, distance):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run EM visualization')
-    parser.add_argument('is_axon', help='True - axons, False - dendrites', default=True)
-    parser.add_argument('distance', help='True - use distance function', default=False)
+    parser.add_argument('--is_axon', help='True - axons, False - dendrites', default=True)
+    parser.add_argument('--distance', help='True - use distance function', default=True)
 
     args = parser.parse_args()
     args_is_axon = args.is_axon
