@@ -13,7 +13,7 @@ def test_np_converter():
     for x in converted2:
         assert type(x) == int
     assert converted1 == arr1
-    assert converted2 == arr2
+    assert converted2 != arr2
 
 def test_points_list():
     axons = vis.points_list(is_axon = True)

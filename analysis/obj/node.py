@@ -1,8 +1,8 @@
 class Node:
     def __init__(self, coordinates, node_id):
-        self.x = int(coordinates[0])
-        self.y = int(coordinates[1])
-        self.z = int(coordinates[2])
+        self.x = 11.24 * float(coordinates[0])
+        self.y = 11.24 * float(coordinates[1])
+        self.z = 28 * float(coordinates[2])
         self.node_id = node_id  # segment id in the axon/dendrite
         self.distance = float('inf')
 
