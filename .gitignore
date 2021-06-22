@@ -1,3 +1,6 @@
 .git
 **/.idea
 **/.vs
+**/data/blood-segmentation
+**/data/neurite-segmentation
+data/*.hdf5
